@@ -139,11 +139,12 @@ def run(opt):
         print(cfg['exp_name'])
     print('Data information:', cfg)
     n_classes = cfg['nclasses']
-    n_channels = cfg['nchannels']
+    bands = cfg['bands']
     class_names = cfg['names']
     root_data_dir = cfg['path']
     train_folder = cfg['train']
     val_folder = cfg['val']
+        
     if out_dir == '':
         out_dir = os.path.join(root_data_dir, 'out')    
     os.makedirs(out_dir, exist_ok=True)
@@ -156,10 +157,11 @@ def run(opt):
     #preprocessing_fn = None
     train_dataset = SegDatasetX(root_data_dir, "train", 
                                n_classes=n_classes, imgH=img_sz, imgW=img_sz, 
-                               #preprocess=preprocessing_fn,
+                               channel_indice = bands,
                                apply_aug = bAug, sub_size=sub_size)
     val_dataset = SegDatasetX(root_data_dir, "val", 
-                             n_classes=n_classes, imgH=img_sz, imgW=img_sz)
+                             n_classes=n_classes, imgH=img_sz, imgW=img_sz,
+                             channel_indice = bands)
                              #preprocess=preprocessing_fn
     
     # It is a good practice to check datasets don't intersects with each other
@@ -180,6 +182,7 @@ def run(opt):
     
     #%% initialize model 
     # load check point file
+    n_channels = len(bands)
     if os.path.exists(checkpoint_file):
         chk = torch.load(checkpoint_file, map_location=DEV)
         # get parameters from check point

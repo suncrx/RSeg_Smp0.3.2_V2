@@ -31,7 +31,9 @@ methods:
 # and numpy mask (H, W)
 class SegDatasetX(Dataset):
     def __init__(self, root_dir, mode="train", 
-                 n_classes=1, imgH=None, imgW=None,
+                 n_classes=1,                  
+                 imgH=None, imgW=None,
+                 channel_indice=None,
                  #preprocess=None,
                  apply_aug=False, sub_size=-1):
         
@@ -44,6 +46,8 @@ class SegDatasetX(Dataset):
         # binary segmentation : n_classes = 1
         # multi-class segmentation : n_classes > 1
         self.n_classes = n_classes
+        
+        self.channel_indice = channel_indice
         
         #self.preprocess = preprocess
         
@@ -94,7 +98,7 @@ class SegDatasetX(Dataset):
         maskPath = self.imgPairs[idx]['mask']
                 
         # 1)Reading image using rasterio package
-        nchans = 3
+        nbands = 3
         with rasterio.open(imagePath) as imgd:
             # image stored in format [C, H, W]
             if self.imgH and self.imgW:
@@ -105,9 +109,14 @@ class SegDatasetX(Dataset):
                     image = imgd.read()
             else:
                 image = imgd.read()
+            nbands = imgd.count
+            # extract the selected bands    
+            if self.channel_indice:
+                image = image[self.channel_indice]
+                nbands = len(self.channel_indice)
+            # transpose to [H,W,C]    
             image = image.transpose(1,2,0)                
-            nchans = imgd.count
-
+            
                             
         # 2)Reading the associated mask from disk in grayscale mode
         if os.path.exists(maskPath):
@@ -127,7 +136,7 @@ class SegDatasetX(Dataset):
 
         
         # apply augmentation (augmentation is only for 1-band and 3-band images)
-        if self.aug and (nchans==3 or nchans==1):
+        if self.aug and (nbands==3 or nbands==1):
             sample = self.aug(image=image, mask=mask)
             image, mask = sample['image'], sample['mask']
        
@@ -235,8 +244,10 @@ if __name__ == '__main__':
     data_dir = 'D:\\GeoData\\DLData\\Saltern\\10bands'    
     #data_dir = 'D:\\GeoData\\DLData\\AerialImages'      
     
-    ds = SegDatasetX(data_dir, 'train', 1, 128, 128, 
-                    apply_aug=True, sub_size=32)        
+    ds = SegDatasetX(data_dir, 'train', n_classes=1, 
+                     imgH=128, imgW=128,
+                     band_indice=[0, 1, 9],
+                    apply_aug=False, sub_size=32)        
     for i in range(10):        
         samp = ds[i]
         img, msk = samp
