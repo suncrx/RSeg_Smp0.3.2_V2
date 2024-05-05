@@ -101,6 +101,8 @@ class SegDatasetX(Dataset):
                 if self.imgH != imgd.height or self.imgW != imgd.width:
                     image = imgd.read(out_shape=(imgd.count, self.imgH, self.imgW),
                                      resampling=Resampling.bilinear)
+                else:
+                    image = imgd.read()
             else:
                 image = imgd.read()
             image = image.transpose(1,2,0)                
@@ -115,6 +117,8 @@ class SegDatasetX(Dataset):
                     if self.imgH != mskd.height or self.imgW != mskd.width:
                         mask = mskd.read(out_shape=(mskd.count, self.imgH, self.imgW),
                                          resampling=Resampling.nearest)
+                    else:
+                        mask = mskd.read()                        
                 else:
                     mask = mskd.read()
             mask = mask[0]                        
