@@ -1,0 +1,4 @@
+REM usage:
+REM python train.py --data ./data/waters.yaml --checkpoint_file D:/GeoData/DLData/vehicle_seg/out/100epochs/deeplabv3_efficientnet-b0.chk --out_dir './output' --arct unet --encoder resnet34 --img_sz 512 --epochs 2 --batch_size 4 --lr 0.001 --momentum 0.9 loss dice --checkpoint True  --sub_size 1.0 --save_period 5
+
+python train.py --data ./data/vehicles.yaml --checkpoint_file D:/GeoData/DLData/vehicle_seg/out/100epochs/unetplusplus_resnet34.chk --arct linknet --encoder resnet34 --img_sz 256 --epochs 2 --batch_size 4 --lr 0.0001 --momentum 0.9 --loss dice --checkpoint True --sub_size 0.2
