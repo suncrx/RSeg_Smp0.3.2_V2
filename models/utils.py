@@ -17,7 +17,28 @@ from .munet2 import MUNet2
 
 from .unet_att import Unet_Attention
 
-
+########################################################################
+#options of arct:
+#'unet':
+#'unet_mini':
+#'unet_scse':    
+#'unet_se':
+#'unet_sk':
+#'unet_cbam':
+#'unet_bam':                    
+#'unet_eca': 
+#'unetplusplus':
+#'deeplabv3':
+#'deeplabv3plus':
+#'linknet':
+#'pan':             
+#'manet':
+#'pspnet':
+#'fpn':
+#------------------------
+#'munet':         
+#'munet_ag':
+#'munet_cbam':                                                        ':
 #-----------------------------------------------------------------------------
 def create_model(arct='unet', encoder='resnet34', encoder_weigths='imagenet',
                  n_classes=1, in_channels=3):
@@ -37,6 +58,18 @@ def create_model(arct='unet', encoder='resnet34', encoder_weigths='imagenet',
         MODEL = smp.Unet(encoder_name=ENCODER, encoder_weights=ENCODER_WEIGHTS,     
                          in_channels=in_channels,  classes=n_classes,
                          activation=activation_name)
+                         #activation='softmax')
+                         
+    #shallow Unet with less depth                          
+    if arct.lower()=='unet_mini':
+        # choose encoder, e.g. mobilenet_v2 or efficientnet-b7 
+        # use `imagenet` pre-trained weights for encoder initialization
+        # model input channels (1 for gray-scale images, 3 for RGB, etc.)
+        # model output channels (number of classes in your dataset)
+        MODEL = smp.Unet(encoder_name=ENCODER, encoder_weights=ENCODER_WEIGHTS,     
+                         in_channels=in_channels,  classes=n_classes,
+                         activation=activation_name,
+                         encoder_depth=2, decoder_channels=(256,128))
                          #activation='softmax')
                          
     # unet using scse attention                         

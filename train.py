@@ -8,7 +8,7 @@ Created on Mon Apr 10 13:38:14 2023
 #!pip install segmentation-models-pytorch
 
 #usage example:
-# python train.py --data ./data/waters.yaml -ckp_file ./checkpoint.chk 
+# python train.py --data ./data/waters.yaml -checkpoint_file ./checkpoint.chk 
 # --out_dir './output' --arct unet --encoder resnet34
 # --imgsz 512 --epochs 2 --batch_size 4 --lr 0.001 
 # --momentum 0.9 --loss dice --checkpoint True   
@@ -64,7 +64,8 @@ def parse_opt():
     
     parser.add_argument('--checkpoint_file', type=str, 
                         #default=ROOT/'data/check.chk', 
-                        default = "D:/GeoData/DLData/vehicle_seg/out/unet.ckp",
+                        #default = "D:/GeoData/DLData/vehicle_seg/out/unet_resnet18.ckp",
+                        default = "D:/GeoData/DLData/Saltern/10bands/out/unet_mini_resnet18.ckp",
                         help='checkpoint file path from which the model is trained')
     
     parser.add_argument('--img_sz', '--img', '--img-size', type=int, 
@@ -73,7 +74,7 @@ def parse_opt():
     parser.add_argument('--out_dir', type=str, default='', 
                         help='training output path')    
     
-    parser.add_argument('--arct', type=str, default='unet', 
+    parser.add_argument('--arct', type=str, default='unet_mini', 
                         help='model architecture (options: unet, unetplusplus, \
                         manet, linknet, fpn, pspnet, deeplabv3,deeplabv3plus, \
                         pan, unet_scse, unet_se, unet_cbam, \
